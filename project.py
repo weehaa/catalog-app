@@ -1,4 +1,4 @@
-from flask import Flask, render_template
+from flask import Flask, render_template, url_for, request
 
 app = Flask(__name__)
 
@@ -8,15 +8,33 @@ def catalog():
     # restaurants = db.restaurants()
     # return render_template('restaurants.html', restaurants=restaurants)
     # return "Main page"
-    categories = ("first", "second", "third")
+    categories = ("First", "Second", "Third")
     items = ("1st", "2nd", "3rd")
     return render_template('catalog.html', categories=categories, items=items)
+
+@app.route('/catalog/<category_name>/<item_name>')
+def categoryItem(category_name, item_name):
+    # restaurant = db.restaurant_byid(restaurant_id)
+    # items = db.menuitems(restaurant.id)
+    item_description = 'blblabla'
+    return render_template('category_item.html',
+                           category_name=category_name,
+                           item_name=item_name,
+                           item_description=item_description)
 
 @app.route('/catalog/<category_name>/items')
 def categoryItems(category_name):
     # restaurant = db.restaurant_byid(restaurant_id)
     # items = db.menuitems(restaurant.id)
-    return "Page for {category_name} items".format(category_name=category_name)
+    categories = ("First", "Second", "Third")
+    items = ("1st", "2nd", "3rd")
+    return render_template('category_items.html',
+                           categories=categories,
+                           category_name=category_name,
+                           items=items)
+
+
+
 
 @app.route('/catalog/<category_name>/<item_name>/JSON')
 def categoryItemJSON(category_name, item_name):
@@ -66,8 +84,10 @@ def deleteItem(item_name):
     #     return render_template('deletemenuitem.html',
     #                            restaurant_id=restaurant_id,
     #                            item=menuitem)
-    return "Page for  deleting an item {item_name}". \
-           format(item_name=item_name)
+    back_url = '/'
+    return render_template('deleteitem.html',
+                           item_name=item_name,
+                           back_url=back_url)
 
 if __name__ == '__main__':
     app.debug = True
