@@ -1,0 +1,20 @@
+{% extends "main.html" %}
+{% block content %}
+
+{% include "category_nav.html" %}
+
+<div class="col-md-10 col-xs-12">
+    <h2>{{category_name}} items</h2>
+    <ul class="nav navmenu-nav">
+    {% for item in items%}
+        <li><a href="{{url_for('categoryItem',
+                                category_name=category_name,
+                                item_name=item)}}">
+            {{item}}
+            </a>
+        </li>
+    {% endfor %}
+    </ul>
+</div>
+
+{% endblock %}

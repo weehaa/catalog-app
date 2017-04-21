@@ -1,20 +1,13 @@
 {% extends "main.html" %}
 {% block content %}
 
-<div class="col-md-2 col-xs-12">
-  <h2>Categories</h2>
-  <ul class="nav navmenu-nav">
-    {% for cat in categories%}
-        <li><a href="#">{{cat}}</a></li>
-    {% endfor %}
-  </ul>
-</div>
+{% include "category_nav.html" %}
 
 <div class="col-md-10 col-xs-12">
     <h2>Latest items</h2>
     <ul class="nav navmenu-nav">
     {% for item in items%}
-        <li><a href="#">{{item}}</a></li>
+        <li><a href="{{url_for('categoryItems', category_name=cat)}}">{{item}}</a></li>
     {% endfor %}
     </ul>
 </div>
