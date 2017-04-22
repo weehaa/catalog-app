@@ -53,6 +53,9 @@ def delete_user(user):
 def category_count():
     return session.query(Category).count()
 
+def category_all():
+    return session.query(Category).all()
+
 def category_byid(id):
     return session.query(Category).filter_by(id=id).one()
 
@@ -77,14 +80,27 @@ def delete_category(category):
     return
 
 # Item CRUD methods
-def item_count():
+def items_count():
     return session.query(Item).count()
+
+def items_latest():
+    """@return a tuple of Item and Category objects"""
+    return session.query(Item, Category).join(Category).\
+           order_by(desc(Item.id)).all()
+
+def items_bycat(category_name):
+    category_id = category_byname(category_name).id
+    return session.query(Item).\
+           filter(Item.category_id == category_id).\
+           order_by(desc(Item.id)).all()
 
 def item_byid(id):
     return session.query(Item).filter_by(id=id).one()
 
-def item_byname(name):
-    return session.query(Item).filter_by(name=name).one()
+def item_byname(category_name, item_name):
+    return session.query(Item).join(Category).\
+           filter(Item.name == item_name).\
+           filter(Category.name == category_name).one()
 
 def item_add(name, category_name, description=None):
     try:

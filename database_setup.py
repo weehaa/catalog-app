@@ -2,6 +2,7 @@ from sqlalchemy import Column, ForeignKey, Integer, String
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import relationship
 from sqlalchemy import create_engine
+import crud
 
 Base = declarative_base()
 
@@ -23,11 +24,16 @@ class Category(Base):
     # user = relationship(User)
 
     @property
+    def items(self):
+        return crud.items_bycat(self.name)
+
+    @property
     def serialize(self):
         """Return object data in easily serializeable format"""
         return {
             'name': self.name,
             'id': self.id,
+            'items': [i.serialize for i in self.items]
         }
 
 

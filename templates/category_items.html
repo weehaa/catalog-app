@@ -9,8 +9,8 @@
     {% for item in items%}
         <li><a href="{{url_for('categoryItem',
                                 category_name=category_name,
-                                item_name=item)}}">
-            {{item}}
+                                item_name=item.name)}}">
+            {{item.name}}
             </a>
         </li>
     {% endfor %}

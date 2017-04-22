@@ -1,46 +1,37 @@
-from flask import Flask, render_template, url_for, request
+from flask import Flask, render_template, url_for, request, jsonify
+import crud
 
 app = Flask(__name__)
 
 @app.route('/')
 @app.route('/catalog')
 def catalog():
-    # restaurants = db.restaurants()
-    # return render_template('restaurants.html', restaurants=restaurants)
-    # return "Main page"
-    categories = ("First", "Second", "Third")
-    items = ("1st", "2nd", "3rd")
-    return render_template('catalog.html', categories=categories, items=items)
+    categories = crud.category_all()
+    items = crud.items_latest()[:9]
+    return render_template('catalog.html',
+                           categories=categories, items=items)
 
 @app.route('/catalog/<category_name>/<item_name>')
 def categoryItem(category_name, item_name):
-    # restaurant = db.restaurant_byid(restaurant_id)
-    # items = db.menuitems(restaurant.id)
-    item_description = 'blblabla'
+    item = crud.item_byname(category_name, item_name)
     return render_template('category_item.html',
                            category_name=category_name,
-                           item_name=item_name,
-                           item_description=item_description)
+                           item=item)
 
 @app.route('/catalog/<category_name>/items')
 def categoryItems(category_name):
-    # restaurant = db.restaurant_byid(restaurant_id)
-    # items = db.menuitems(restaurant.id)
-    categories = ("First", "Second", "Third")
-    items = ("1st", "2nd", "3rd")
+    categories = crud.category_all()
+    cat_items = crud.items_bycat(category_name)
     return render_template('category_items.html',
                            categories=categories,
                            category_name=category_name,
-                           items=items)
+                           items=cat_items)
 
-
-
-
-@app.route('/catalog/<category_name>/<item_name>/JSON')
-def categoryItemJSON(category_name, item_name):
+@app.route('/catalog.json')
+def catalogJSON():
     pass
-    # item = db.menuitem_byid(menu_id)
-    # return jsonify(MenuItem=item.serialize)
+    categories = crud.category_all()
+    return jsonify(Category=[c.serialize for c in categories])
 
 @app.route('/catalog/<category_name>/new/', methods=['GET','POST'])
 def addItem(category_name):
