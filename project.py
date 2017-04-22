@@ -68,8 +68,13 @@ def editItem(item_name):
     #     return render_template('editmenuitem.html',
     #                            restaurant_id=restaurant_id,
     #                            menu=menuitem)
-    return "Page for a editting an item {item_name}". \
-           format(item_name=item_name)
+    back_url = '/'
+    categories = ("First", "Second", "Third")
+    return render_template('edititem.html',
+                           item_name=item_name,
+                           item_description='some text',
+                           categories=categories,
+                           back_url=back_url)
 
 @app.route('/catalog/<item_name>/delete/',
            methods=['GET','POST'])
