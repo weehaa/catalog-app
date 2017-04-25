@@ -126,7 +126,7 @@ def item_update(item, name, description):
     session.commit()
     return
 
-def delete_item(item):
+def item_delete(item):
     session.delete(item)
     session.commit()
     return

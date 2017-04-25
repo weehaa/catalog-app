@@ -95,27 +95,24 @@ def editItem(item_name):
                            back_url=back_url)
 
 
-@app.route('/catalog/<item_name>/delete/',
+@app.route('/catalog/<category_name>/<item_name>/delete/',
            methods=['GET','POST'])
 @logged_in
-def deleteItem(item_name):
-    itemToDelete = crud.item_byname(category_name, item_name)
-    if login_session['user_id'] != itemToDelete[0].user_id:
-        return redirect('/login')
-            # menuitem = db.menuitem_byid(menu_id)
-    # if request.method == 'POST':
-    #     db.delete_menuitem(menuitem)
-    #     flash("item deleted!")
-    #     return redirect(url_for('restaurantMenu',
-    #                             restaurant_id=restaurant_id))
-    # else:
-    #     return render_template('deletemenuitem.html',
-    #                            restaurant_id=restaurant_id,
-    #                            item=menuitem)
-    back_url = '/'
-    return render_template('deleteitem.html',
-                           item_name=item_name,
-                           back_url=back_url)
+def deleteItem(item_name, category_name):
+    itemToDelete = crud.item_byCatAndName(category_name, item_name)
+    if login_session['user_id'] != itemToDelete.user_id:
+        flash('You are not authorized to delete this Item')
+        return redirect(url_for('categoryItem', item_name=item_name,
+                        category_name=category_name))
+    if request.method == 'POST':
+        crud.item_delete(item_name)
+        flash("item deleted!")
+        return redirect(url_for('restaurantMenu',
+                                restaurant_id=restaurant_id))
+    else:
+        return render_template('deleteitem.html',
+                               item_name=item_name,
+                               category_name=category_name)
 
 @app.route('/login')
 def showLogin():
@@ -202,10 +199,12 @@ def gconnect():
     login_session['provider'] = 'google'
 
     # see if user exists, if it doesn't make a new one
-    # user_id = getUserID(data["email"])
-    # if not user_id:
-    #     user_id = createUser(login_session)
-    # login_session['user_id'] = user_id
+    user_id = crud.user_byemail(data["email"]).id
+    if not user_id:
+        user_id = crud.user_add(login_session['username'],
+                             login_session['email'],
+                             login_session['picture']).id
+    login_session['user_id'] = user_id
 
     output = ''
     output += '<h1>Welcome, '
@@ -245,7 +244,7 @@ def disconnect():
         if login_session['provider'] == 'google':
             gdisconnect()
             del login_session['gplus_id']
-            # del login_session['credentials']
+            del login_session['access_token']
         if login_session['provider'] == 'facebook':
             fbdisconnect()
             del login_session['facebook_id']

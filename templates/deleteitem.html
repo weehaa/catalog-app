@@ -12,7 +12,8 @@
 	</button>
 </form>
 
-<a href={{back_url}}>
+<a href="{{url_for('categoryItems', category_name=category_name,
+ 		 item_name=item_name)}}">
 	<button class="btn btn-default delete">
 		<span class="glyphicon glyphicon-remove" aria-hidden="true">
 		</span>
