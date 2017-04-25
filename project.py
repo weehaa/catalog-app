@@ -28,7 +28,7 @@ def catalog():
 
 @app.route('/catalog/<category_name>/<item_name>')
 def categoryItem(category_name, item_name):
-    item = crud.item_byname(category_name, item_name)
+    item = crud.item_byCatAndName(category_name, item_name)
     return render_template('category_item.html',
                            category_name=category_name,
                            item=item)
@@ -76,6 +76,7 @@ def addItem(category_name):
            methods=['GET','POST'])
 @logged_in
 def editItem(item_name):
+
     # menuitem = db.menuitem_byid(menu_id)
     # if request.method == 'POST':
     #     db.update_menuitem(request.form['name'], restaurant_id)
@@ -98,7 +99,10 @@ def editItem(item_name):
            methods=['GET','POST'])
 @logged_in
 def deleteItem(item_name):
-    # menuitem = db.menuitem_byid(menu_id)
+    itemToDelete = crud.item_byname(category_name, item_name)
+    if login_session['user_id'] != itemToDelete[0].user_id:
+        return redirect('/login')
+            # menuitem = db.menuitem_byid(menu_id)
     # if request.method == 'POST':
     #     db.delete_menuitem(menuitem)
     #     flash("item deleted!")

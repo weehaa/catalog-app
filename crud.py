@@ -27,11 +27,17 @@ def user_byid(id):
 def user_byname(name):
     return session.query(User).filter_by(name=name).one()
 
+def user_byemail(email):
+    try:
+        return session.query(User).filter_by(email=email).one()
+    except:
+        return None
+
 def user_add(name, email, picture=None):
     newUser = User(name=name, email=email, picture=picture)
     session.add(newUser)
     session.commit()
-    return
+    return user_byemail(email)
 
 def user_update(user, name=None, email=None, picture=None):
     if name:
@@ -97,21 +103,22 @@ def items_bycat(category_name):
 def item_byid(id):
     return session.query(Item).filter_by(id=id).one()
 
-def item_byname(category_name, item_name):
+def item_byCatAndName(category_name, item_name):
     return session.query(Item).join(Category).\
            filter(Item.name == item_name).\
            filter(Category.name == category_name).one()
 
-def item_add(name, category_name, description=None):
+def item_add(name, category_name, user_id, description=None):
     try:
         category_id = category_byname(category_name).id
-        newItem = Item(name=name, description=description,
+        newItem = Item(name=name, user_id=user_id,
+                       description=description,
                        category_id=category_id)
         session.add(newItem)
         session.commit()
+        return item_byCatAndName(category_name, name)
     except:
-        print ("Exception while adding an Item to a database")
-    return
+        return None
 
 def item_update(item, name, description):
     item.name = name

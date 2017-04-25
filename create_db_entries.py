@@ -27,15 +27,16 @@ crud.category_add(name="Football")
 crud.category_add(name="Skating")
 crud.category_add(name="Hockey")
 
-# Create Category Items
-crud.item_add(name="Stick", category_name="Hockey")
-crud.item_add(name="Goggles", category_name="Snowboarding")
-crud.item_add(name="Snowboard", category_name="Snowboarding")
-crud.item_add(name="Two shinguards", category_name="Soccer")
-crud.item_add(name="Shinguards", category_name="Soccer")
-crud.item_add(name="Bat", category_name="Baseball")
-crud.item_add(name="Jersey", category_name="Soccer")
-crud.item_add(name="Soccer Cleats", category_name="Soccer")
-crud.item_add(name="Frisbee", category_name="Frisbee")
 
+# Create Category Items
+crud.item_add(name="Stick", category_name="Hockey", user_id=1)
+crud.item_add(name="Goggles", category_name="Snowboarding", user_id=1)
+crud.item_add(name="Snowboard", category_name="Snowboarding", user_id=1)
+crud.item_add(name="Two shinguards", category_name="Soccer", user_id=1)
+crud.item_add(name="Shinguards", category_name="Soccer", user_id=1)
+crud.item_add(name="Bat", category_name="Baseball", user_id=2)
+crud.item_add(name="Jersey", category_name="Soccer", user_id=2)
+crud.item_add(name="Soccer Cleats", category_name="Soccer", user_id=2)
+crud.item_add(name="Frisbee", category_name="Frisbee", user_id=2)
+print crud.items_count()
 print "Successfully added Catalog categories, items and test users!"
