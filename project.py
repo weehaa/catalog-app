@@ -72,27 +72,32 @@ def addItem(category_name):
            format(category_name=category_name)
 
 
-@app.route('/catalog/<item_name>/edit/',
+@app.route('/catalog/<category_name>/<item_name>/edit/',
            methods=['GET','POST'])
 @logged_in
-def editItem(item_name):
-
-    # menuitem = db.menuitem_byid(menu_id)
-    # if request.method == 'POST':
-    #     db.update_menuitem(request.form['name'], restaurant_id)
-    #     return redirect(url_for('restaurantMenu',
-    #                             restaurant_id=restaurant_id))
-    # else:
-    #     return render_template('editmenuitem.html',
-    #                            restaurant_id=restaurant_id,
-    #                            menu=menuitem)
-    back_url = '/'
-    categories = ("First", "Second", "Third")
-    return render_template('edititem.html',
-                           item_name=item_name,
-                           item_description='some text',
-                           categories=categories,
-                           back_url=back_url)
+def editItem(item_name, category_name):
+    itemToEdit = crud.item_byCatAndName(category_name, item_name)
+    if login_session['user_id'] != itemToEdit.user_id:
+        flash('You are not authorized to edit this Item')
+        return redirect(url_for('categoryItem', item_name=item_name,
+                        category_name=category_name))
+    if request.method == 'POST':
+        item = crud.item_update(itemToEdit, request.form['item_name'],
+                         request.form['description'],
+                         request.form['category_select'])
+        if item:
+            flash("Item saved!")
+        else:
+            flash("Your data is not correct!")
+        return redirect(url_for('restaurantMenu',
+                                restaurant_id=restaurant_id))
+    else:
+        categories = crud.category_all()
+        return render_template('edititem.html',
+                               item_name=item_name,
+                               item_description=item.description,
+                               categories=categories,
+                               category_name=category_name)
 
 
 @app.route('/catalog/<category_name>/<item_name>/delete/',

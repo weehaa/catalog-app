@@ -66,7 +66,10 @@ def category_byid(id):
     return session.query(Category).filter_by(id=id).one()
 
 def category_byname(name):
-    return session.query(Category).filter_by(name=name).one()
+    try:
+        return session.query(Category).filter_by(name=name).one()
+    except:
+        return None
 
 def category_add(name):
     newCategory = Category(name=name)
@@ -120,11 +123,22 @@ def item_add(name, category_name, user_id, description=None):
     except:
         return None
 
-def item_update(item, name, description):
-    item.name = name
-    session.add(item)
-    session.commit()
-    return
+def item_update(item, name, description, category_name):
+    try:
+        if name:
+            item.name = name
+        if description:
+            item.description = description
+        if category_name:
+            category_id = category_byname(category_name)
+            if category_id:
+                item.category_id = category_id
+        session.add(item)
+        session.commit()
+        return item
+    except:
+        return None
+
 
 def item_delete(item):
     session.delete(item)
