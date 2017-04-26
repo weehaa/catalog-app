@@ -4,12 +4,6 @@
 {% include "category_nav.html" %}
 
 <div class="col-md-10 col-xs-12">
-    {% if 'username' in session %}
-        <h3 class="action">
-        <a href="{{url_for('addItem')}}"> Add item</a>
-
-        </h3>
-    {% endif %}
     <h2>Latest items</h2>
     <ul class="nav navmenu-nav">
     {% for item in items%}

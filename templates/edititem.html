@@ -1,39 +1,47 @@
 {% extends "main.html" %}
 
 {% block content %}
-<h2>Edit Item</h2>
+
+{% if not item_name %}
+    {% set title = 'New Item' %}
+    {% set cancel_url = url_for('catalog') %}
+{% else %}
+    {% set title = 'Edit Item'%}
+    {% set cancel_url = url_for('categoryItem',
+                                category_name=category_name,
+     		                    item_name=item_name) %}
+{% endif %}
+
+<h2>{{title}}</h2>
 
 <form action="" method="post">
-    <label for="">
-        Title
-        <input type="text" name="item_name" value={{item_name}}>
-    </label>
-    <label for="">
-        Description
-        <textarea name="item_description"
-                  placeholder="Description"
-                  rows="8"
-                  cols="80">{{item_description}}</textarea>
-    </label>
-    <label for="">
-        Category
-        <select class="" name="category_select">
-            {% for cat in categories%}
-            <option value={{cat.name}}
-                    {% if cat.name == category_name %}
-                        selected
-                    {%endif%}>{{cat.name}}</option>
-            {% endfor %}
-        </select>
-    </label>
-    <button id="submit" class="btn btn-default delete" type="submit">
+
+    <label class="labels" for="item_name">Title</label>
+    <input type="text" name="item_name" value="{{item_name}}">
+
+    <label class="labels" for="item_description">Description</label>
+    <textarea name="item_description"
+              placeholder="Description"
+              rows="8"
+              cols="80">{{item_description}}</textarea>
+
+    <label class="labels" for="category_select">Category</label>
+    <select class="cat-select" name="category_select">
+        {% for cat in categories%}
+        <option value="{{cat.name}}"
+                {% if cat.name == category_name %}
+                    selected
+                {%endif%}>{{cat.name}}</option>
+        {% endfor %}
+    </select>
+
+    <button id="submit" class="btn btn-default" type="submit">
         <span class="glyphicon glyphicon-ok" aria-hidden="true">
         </span>Submit
     </button>
 </form>
-<a href="{{url_for('categoryItems', category_name=category_name,
- 		 item_name=item_name)}}">
-    <button class="btn btn-default delete">
+<a href="{{cancel_url}}">
+    <button class="btn btn-default">
         <span class="glyphicon glyphicon-remove" aria-hidden="true">
         </span>
         Cancel

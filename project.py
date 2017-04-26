@@ -75,7 +75,7 @@ def addItem():
             flash("Your data is not correct!")
 
     categories = crud.category_all()
-    return render_template('newitem.html',
+    return render_template('edititem.html',
                            categories=categories)
 
 
@@ -95,7 +95,7 @@ def editItem(item_name, category_name):
         if item:
             flash("Item saved!")
             category_name = crud.category_byid(item.category_id).name
-            return redirect(url_for('categoryItems',
+            return redirect(url_for('categoryItem',
                                     category_name=category_name,
              		                item_name=item_name))
         else:
