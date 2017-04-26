@@ -52,7 +52,7 @@ def logged_in(func):
     @wraps(func)
     def decorated_function(*args, **kwargs):
         if 'username' not in login_session:
-            return redirect('/login')
+            return redirect(url_for('showLogin', return_url = request.path))
         else:
             return func(*args, **kwargs)
     return decorated_function
@@ -129,12 +129,15 @@ def deleteItem(item_name, category_name):
 
 @app.route('/login')
 def showLogin():
+    return_url = request.args.get('return_url')
+    if not return_url:
+        return_url = '/'
     # create unique state token (anti-frogery)
     state = ''.join(random.choice(string.ascii_uppercase + string.digits)
                     for x in xrange(32))
     login_session['state'] = state
     # return "The current session state is %s" % login_session['state']
-    return render_template('login.html', STATE=state)
+    return render_template('login.html', STATE=state, return_url=return_url)
 
 @app.route('/gconnect', methods=['POST'])
 def gconnect():
