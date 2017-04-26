@@ -114,7 +114,7 @@ def item_byCatAndName(category_name, item_name):
 def item_add(name, category_name, user_id, description=None):
     try:
         category_id = category_byname(category_name).id
-        newItem = Item(name=name, user_id=user_id,
+        newItem = Item(name=name, user_id=int(user_id),
                        description=description,
                        category_id=category_id)
         session.add(newItem)
@@ -130,15 +130,14 @@ def item_update(item, name, description, category_name):
         if description:
             item.description = description
         if category_name:
-            category_id = category_byname(category_name)
-            if category_id:
-                item.category_id = category_id
+            category = category_byname(category_name)
+            if category:
+                item.category_id = category.id
         session.add(item)
         session.commit()
         return item
     except:
         return None
-
 
 def item_delete(item):
     session.delete(item)

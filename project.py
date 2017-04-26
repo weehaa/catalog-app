@@ -57,19 +57,26 @@ def logged_in(func):
             return func(*args, **kwargs)
     return decorated_function
 
-@app.route('/catalog/<category_name>/new/', methods=['GET','POST'])
+@app.route('/catalog/newitem/', methods=['GET','POST'])
 @logged_in
-def addItem(category_name):
-    # if request.method == 'POST':
-    #     db.add_menuitem(request.form['name'], restaurant_id)
-    #     flash("new item created!")
-    #     return redirect(url_for('restaurantMenu',
-    #                             restaurant_id=restaurant_id))
-    # else:
-    #     return render_template('newmenuitem.html',
-    #                            restaurant_id=restaurant_id)
-    return "Page for a new item in a {category_name} category". \
-           format(category_name=category_name)
+def addItem():
+    if request.method == 'POST':
+        item = crud.item_add(request.form['item_name'],
+                             request.form['category_select'],
+                             str(login_session['user_id']),
+                             request.form['item_description'])
+        if item:
+            flash("Item saved!")
+            category_name = crud.category_byid(item.category_id).name
+            return redirect(url_for('categoryItems',
+                                    category_name=category_name,
+             		                item_name=item.name))
+        else:
+            flash("Your data is not correct!")
+
+    categories = crud.category_all()
+    return render_template('newitem.html',
+                           categories=categories)
 
 
 @app.route('/catalog/<category_name>/<item_name>/edit/',
@@ -83,21 +90,22 @@ def editItem(item_name, category_name):
                         category_name=category_name))
     if request.method == 'POST':
         item = crud.item_update(itemToEdit, request.form['item_name'],
-                         request.form['description'],
-                         request.form['category_select'])
+                                request.form['item_description'],
+                                request.form['category_select'])
         if item:
             flash("Item saved!")
+            category_name = crud.category_byid(item.category_id).name
+            return redirect(url_for('categoryItems',
+                                    category_name=category_name,
+             		                item_name=item_name))
         else:
             flash("Your data is not correct!")
-        return redirect(url_for('restaurantMenu',
-                                restaurant_id=restaurant_id))
-    else:
-        categories = crud.category_all()
-        return render_template('edititem.html',
-                               item_name=item_name,
-                               item_description=item.description,
-                               categories=categories,
-                               category_name=category_name)
+    categories = crud.category_all()
+    return render_template('edititem.html',
+                           item_name=item_name,
+                           item_description=itemToEdit.description,
+                           categories=categories,
+                           category_name=category_name)
 
 
 @app.route('/catalog/<category_name>/<item_name>/delete/',
@@ -110,10 +118,10 @@ def deleteItem(item_name, category_name):
         return redirect(url_for('categoryItem', item_name=item_name,
                         category_name=category_name))
     if request.method == 'POST':
-        crud.item_delete(item_name)
+        crud.item_delete(itemToDelete)
         flash("item deleted!")
-        return redirect(url_for('restaurantMenu',
-                                restaurant_id=restaurant_id))
+        return redirect(url_for('categoryItems',
+                                category_name=category_name))
     else:
         return render_template('deleteitem.html',
                                item_name=item_name,

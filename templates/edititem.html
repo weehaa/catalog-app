@@ -19,7 +19,10 @@
         Category
         <select class="" name="category_select">
             {% for cat in categories%}
-            <option value={{cat}}>{{cat}}</option>
+            <option value={{cat.name}}
+                    {% if cat.name == category_name %}
+                        selected
+                    {%endif%}>{{cat.name}}</option>
             {% endfor %}
         </select>
     </label>
