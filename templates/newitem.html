@@ -1,0 +1,39 @@
+{% extends "main.html" %}
+
+{% block content %}
+<h2>New Item</h2>
+
+<form action="" method="post">
+    <label for="">
+        Title
+        <input type="text" name="item_name" value="">
+    </label>
+    <label for="">
+        Description
+        <textarea name="item_description"
+                  placeholder="Description"
+                  rows="8"
+                  cols="80"></textarea>
+    </label>
+    <label for="">
+        Category
+        <select class="" name="category_select">
+            {% for cat in categories%}
+            <option value={{cat.name}}>{{cat.name}}</option>
+            {% endfor %}
+        </select>
+    </label>
+    <button id="submit" class="btn btn-default delete" type="submit">
+        <span class="glyphicon glyphicon-ok" aria-hidden="true">
+        </span>Submit
+    </button>
+</form>
+<a href="{{url_for('catalog')}}">
+    <button class="btn btn-default delete">
+        <span class="glyphicon glyphicon-remove" aria-hidden="true">
+        </span>
+        Cancel
+    </button>
+</a>
+
+{% endblock %}
