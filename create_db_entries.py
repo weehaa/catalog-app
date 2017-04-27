@@ -1,5 +1,6 @@
 import crud
 
+
 # Create test users
 crud.user_add(name="Test1", email="test1@example.com",
              picture='https://lh4.ggpht.com/wKrDLLmmxjfRG2-E-k5L5BUuHWpCOe4lWRF7oVs1Gzdn5e5yvr8fj-ORTlBF43U47yI=w300')
@@ -15,6 +16,7 @@ crud.user_add(name="Test4", email="test4@example.com",
 
 crud.user_add(name="Test5", email="test5@example.com",
              picture='https://lh4.ggpht.com/wKrDLLmmxjfRG2-E-k5L5BUuHWpCOe4lWRF7oVs1Gzdn5e5yvr8fj-ORTlBF43U47yI=w300')
+
 
 # Create Catalog categories
 crud.category_add(name="Soccer")
