@@ -1,5 +1,5 @@
 {% extends "main.html" %}
-
+{% block title %}Edit Item{% endblock %}
 {% block content %}
 
 {% if not item_name %}
@@ -17,13 +17,9 @@
 <form action="" method="post">
 
     <label class="labels" for="item_name">Title</label>
-    <input type="text" name="item_name" value="{{item_name}}">
-
-    <label class="labels" for="item_description">Description</label>
-    <textarea name="item_description"
-              placeholder="Description"
-              rows="8"
-              cols="80">{{item_description}}</textarea>
+    <input class="iname" type="text"
+           name="item_name" value="{{item_name}}"
+           placeholder="Item name">
 
     <label class="labels" for="category_select">Category</label>
     <select class="cat-select" name="category_select">
@@ -34,6 +30,15 @@
                 {%endif%}>{{cat.name}}</option>
         {% endfor %}
     </select>
+
+    <label class="labels" for="item_description">Description</label>
+    <textarea class="idesc"
+              name="item_description"
+              placeholder="Description"
+              rows="8"
+              cols="80">{{item_description}}</textarea>
+
+
 
     <button id="submit" class="btn btn-default" type="submit">
         <span class="glyphicon glyphicon-ok" aria-hidden="true">

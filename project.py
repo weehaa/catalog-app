@@ -131,6 +131,8 @@ def deleteItem(item_name, category_name):
 def showLogin():
     return_url = request.args.get('return_url')
     if not return_url:
+        return_url = unicode(request.referrer)
+    if not return_url:
         return_url = '/'
     # create unique state token (anti-frogery)
     state = ''.join(random.choice(string.ascii_uppercase + string.digits)
