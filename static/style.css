@@ -88,9 +88,16 @@ h2 {
 }
 
 .categories-nav {
-	font-weight: bold;
 	box-shadow: 0 5px 40px rgba(0,0,0,.18);
 	background: #fdffe0;
+}
+
+.category {
+	font-weight: bold;
+}
+
+.category.active {
+    box-shadow: inset 0px 0px 12px 2px rgba(0,0,0,.18);
 }
 
 .items {
