@@ -18,23 +18,30 @@ CLIENT_ID = json.loads(
     open('catalog_app_client_secret.json', 'r').read())['web']['client_id']
 APPLICATION_NAME = "Catalog App"
 
+
 @app.route('/')
 @app.route('/catalog')
 def catalog():
+    '''Main page handler'''
     categories = crud.category_all()
+    # show last 9 items
     items = crud.items_latest()[:9]
     return render_template('catalog.html',
                            categories=categories, items=items)
 
+
 @app.route('/catalog/<category_name>/<item_name>')
 def categoryItem(category_name, item_name):
+    '''View item details page handler'''
     item = crud.item_byCatAndName(category_name, item_name)
     return render_template('category_item.html',
                            category_name=category_name,
                            item=item)
 
+
 @app.route('/catalog/<category_name>/items')
 def categoryItems(category_name):
+    '''Category items page handler'''
     categories = crud.category_all()
     cat_items = crud.items_bycat(category_name)
     return render_template('category_items.html',
@@ -42,25 +49,31 @@ def categoryItems(category_name):
                            category_name=category_name,
                            items=cat_items)
 
+
 @app.route('/catalog.json')
 def catalogJSON():
     pass
     categories = crud.category_all()
     return jsonify(Category=[c.serialize for c in categories])
 
+
 def logged_in(func):
+    '''Check that user is logged in'''
     @wraps(func)
     def decorated_function(*args, **kwargs):
         if 'username' not in login_session:
-            return redirect(url_for('showLogin', return_url = request.path))
+            return redirect(url_for('showLogin', return_url=request.path))
         else:
             return func(*args, **kwargs)
     return decorated_function
 
-@app.route('/catalog/newitem/', methods=['GET','POST'])
+
+@app.route('/catalog/newitem/', methods=['GET', 'POST'])
 @logged_in
 def addItem():
+    '''New item page handler'''
     if request.method == 'POST':
+        # TODO item name constraint check should be here
         item = crud.item_add(request.form['item_name'],
                              request.form['category_select'],
                              str(login_session['user_id']),
@@ -70,7 +83,7 @@ def addItem():
             category_name = crud.category_byid(item.category_id).name
             return redirect(url_for('categoryItems',
                                     category_name=category_name,
-             		                item_name=item.name))
+                                    item_name=item.name))
         else:
             flash("Your data is not correct!")
 
@@ -80,10 +93,12 @@ def addItem():
 
 
 @app.route('/catalog/<category_name>/<item_name>/edit/',
-           methods=['GET','POST'])
+           methods=['GET', 'POST'])
 @logged_in
 def editItem(item_name, category_name):
+    '''Edit item page handler'''
     itemToEdit = crud.item_byCatAndName(category_name, item_name)
+    # check that user is the item creator
     if login_session['user_id'] != itemToEdit.user_id:
         flash('You are not authorized to edit this Item')
         return redirect(url_for('categoryItem', item_name=item_name,
@@ -97,7 +112,7 @@ def editItem(item_name, category_name):
             category_name = crud.category_byid(item.category_id).name
             return redirect(url_for('categoryItem',
                                     category_name=category_name,
-             		                item_name=item_name))
+                                    item_name=item.name))
         else:
             flash("Your data is not correct!")
     categories = crud.category_all()
@@ -109,10 +124,12 @@ def editItem(item_name, category_name):
 
 
 @app.route('/catalog/<category_name>/<item_name>/delete/',
-           methods=['GET','POST'])
+           methods=['GET', 'POST'])
 @logged_in
 def deleteItem(item_name, category_name):
+    '''Delete item page handler'''
     itemToDelete = crud.item_byCatAndName(category_name, item_name)
+    # check that user is the item creator
     if login_session['user_id'] != itemToDelete.user_id:
         flash('You are not authorized to delete this Item')
         return redirect(url_for('categoryItem', item_name=item_name,
@@ -127,8 +144,11 @@ def deleteItem(item_name, category_name):
                                item_name=item_name,
                                category_name=category_name)
 
+
 @app.route('/login')
 def showLogin():
+    '''Login page handler'''
+    # define url to return the user after login
     return_url = request.args.get('return_url')
     if not return_url:
         return_url = unicode(request.referrer)
@@ -138,11 +158,12 @@ def showLogin():
     state = ''.join(random.choice(string.ascii_uppercase + string.digits)
                     for x in xrange(32))
     login_session['state'] = state
-    # return "The current session state is %s" % login_session['state']
     return render_template('login.html', STATE=state, return_url=return_url)
+
 
 @app.route('/gconnect', methods=['POST'])
 def gconnect():
+    '''Google account login method'''
     # Validate state token
     if request.args.get('state') != login_session['state']:
         response = make_response(json.dumps('Invalid state parameter.'), 401)
@@ -194,8 +215,8 @@ def gconnect():
     stored_credentials = login_session.get('credentials')
     stored_gplus_id = login_session.get('gplus_id')
     if stored_credentials is not None and gplus_id == stored_gplus_id:
-        response = make_response(json.dumps('Current user is already connected.'),
-                                 200)
+        response = make_response(json.dumps('''Current user is already
+                                            connected.'''), 200)
         response.headers['Content-Type'] = 'application/json'
         return response
 
@@ -220,8 +241,8 @@ def gconnect():
     user_id = crud.user_byemail(data["email"]).id
     if not user_id:
         user_id = crud.user_add(login_session['username'],
-                             login_session['email'],
-                             login_session['picture']).id
+                                login_session['email'],
+                                login_session['picture']).id
     login_session['user_id'] = user_id
 
     output = ''
@@ -230,13 +251,16 @@ def gconnect():
     output += '!</h1>'
     output += '<img src="'
     output += login_session['picture']
-    output += ' " style = "width: 300px; height: 300px;border-radius: 150px;-webkit-border-radius: 150px;-moz-border-radius: 150px;"> '
+    output += '''" style = "width: 300px; height: 300px; border-radius: 150px;
+                 -webkit-border-radius: 150px;-moz-border-radius: 150px;">'''
     flash("you are now logged in as %s" % login_session['username'])
     print "done!"
     return output
 
+
 @app.route('/gdisconnect')
 def gdisconnect():
+    ''' Google user account disconnect method. Revokes gconnect token'''
     # Only disconnect a connected user.
     credentials = login_session.get('credentials')
     if credentials is None:
@@ -255,9 +279,11 @@ def gdisconnect():
         response.headers['Content-Type'] = 'application/json'
         return response
 
+
 # Disconnect based on provider
 @app.route('/disconnect')
 def disconnect():
+    '''Logout user method'''
     if 'provider' in login_session:
         if login_session['provider'] == 'google':
             gdisconnect()

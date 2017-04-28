@@ -1,6 +1,6 @@
 * {
 	font-family: Helvetica, Arial, sans-serif;
-	font-weight: 600;
+	font-weight: 400;
 }
 
 .title {
@@ -28,9 +28,9 @@ h2 {
  }
 
  a {
- 	font-size: 14px;
+ 	font-size: 1.2em;
  	color: #0093B9;
- 	line-height: 17px;
+ 	line-height: 1.4em;
  }
 
 .padding-top {
@@ -84,8 +84,13 @@ h2 {
 }
 
 .categories-nav {
+	font-weight: bold;
 	box-shadow: 0 5px 40px rgba(0,0,0,.18);
 	background: #fdffe0;
+}
+
+.items {
+	font-weight: normal;
 }
 
 .labels {

@@ -139,8 +139,9 @@ def item_add(name, category_name, user_id, description=None):
                        category_id=category_id)
         session.add(newItem)
         session.commit()
-        return item_byCatAndName(category_name, name)
+        return item_byid(newItem.id)
     except:
+        session.rollback()
         return None
 
 

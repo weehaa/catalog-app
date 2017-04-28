@@ -6,7 +6,7 @@
 
 <div class="col-md-10 col-xs-12">
     <h2>{{category_name}} items</h2>
-    <ul class="nav navmenu-nav">
+    <ul class="nav navmenu-nav items">
     {% for item in items%}
         <li><a href="{{url_for('categoryItem',
                                 category_name=category_name,
