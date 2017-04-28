@@ -70,21 +70,22 @@ h2 {
 	background: #0D0856;
 }
 
-.top-menu p {
+.topmenu-item {
+    padding: 20px 10px;
 	margin-bottom: 0;
 	line-height: 16px;
-}
-
-.top-menu a {
-	margin-bottom: 0;
-	line-height: 16px;
-	color: #FFF;
+	color: #fff;
 	font-size: 16px;
 	font-weight: 500;
+	border-radius: 3px;
 }
 
-.glyphicon.glyphicon-off {
-	margin-left: 15px;
+.topmenu-item:hover,
+.topmenu-item:focus,
+.topmenu-item:active {
+	color: #fff;
+	text-decoration: none;
+	background: #0093b9;
 }
 
 .categories-nav {

@@ -37,11 +37,11 @@ $(document).ready(function(){
    // FACEBOOK SIGN IN
     window.fbAsyncInit = function() {
     FB.init({
-      appId      : '846524132078825',
+      appId      : '151050862096478',
       cookie     : true,  // enable cookies to allow the server to access
                           // the session
       xfbml      : true,  // parse social plugins on this page
-      version    : 'v2.2' // use version 2.2
+      version    : 'v2.8' // use version 2.9
     });
 
     };
@@ -57,7 +57,7 @@ $(document).ready(function(){
 
     // Here we run a very simple test of the Graph API after login is
     // successful.  See statusChangeCallback() for when this call is made.
-    function sendTokenToServer() {
+    window.sendTokenToServer = function() {
       var access_token = FB.getAuthResponse()['accessToken'];
       console.log(access_token)
       console.log('Welcome!  Fetching your information.... ');
@@ -73,8 +73,8 @@ $(document).ready(function(){
           // Handle or verify the server response if necessary.
           if (result) {
               $('.login-choice').hide()
-            $('#result').html('Login Successful!</br>'+ result +
-                              '</br>Redirecting...')
+              $('.flash').html('Login Successful! Redirecting...')
+            $('#result').html(result)
            setTimeout(function() {
             window.location.href = RETURN_URL;
            }, 4000);

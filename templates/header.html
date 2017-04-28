@@ -1,7 +1,7 @@
 <header class="container">
 	<div class="row top-menu">
 		<div class="col-xs-6">
-			<a href="{{url_for('catalog')}}">
+			<a class="topmenu-item" href="{{ url_for('catalog') }}">
 				<span class="glyphicon glyphicon-home" aria-hidden="true">
 				</span>Home
 
@@ -9,16 +9,16 @@
 		</div>
 		<div class="col-xs-6 text-right">
 		{% if 'username' not in session %}
-			<a href="{{url_for('showLogin')}}">
+			<a class="topmenu-item" href="{{ url_for('showLogin') }}">
 				<span class="glyphicon glyphicon-user" aria-hidden="true">
 				</span>Login
 			</a>
 		{% else %}
-			<a href="{{url_for('addItem')}}">
+			<a class="topmenu-item" href="{{ url_for('addItem') }}">
 				<span class="glyphicon glyphicon-plus" aria-hidden="true">
 				</span>Add item
 			</a>
-			<a href="{{url_for('disconnect')}}">
+			<a class="topmenu-item" href="{{ url_for('disconnect') }}">
 				<span class="glyphicon glyphicon-off" aria-hidden="true">
 				</span>Logout
 			</a>
