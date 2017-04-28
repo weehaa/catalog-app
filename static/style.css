@@ -41,6 +41,10 @@ h2 {
 	padding-bottom: 30px;
 }
 
+.margin-bottom {
+	margin-bottom: 30px;
+}
+
 .margin-right {
 	margin-right: 30px;
 }
@@ -142,4 +146,12 @@ h2 {
 
 .login-btns {
 	display: inline-block;
+}
+
+.user-pic {
+	width: 300px;
+	height: 300px;
+	border-radius: 150px;
+	-webkit-border-radius: 150px;
+	-moz-border-radius: 150px;
 }

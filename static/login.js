@@ -13,6 +13,7 @@ function signInCallback(authResult) {
       success: function(result) {
           // Handle or verify the server response if necessary.
           if (result) {
+              $('.login-choice').hide()
               $('.flash').html('Login Successful! Redirecting...')
               $('#result').html(result)
               setTimeout(function() {
@@ -27,7 +28,7 @@ function signInCallback(authResult) {
       }
   }); } }
       // END GOOGLE PLUS SIGN IN
-      
+
 $(document).ready(function(){
     // constants
     window.STATE = $("input[name='state']").val();
@@ -71,6 +72,7 @@ $(document).ready(function(){
         success: function(result) {
           // Handle or verify the server response if necessary.
           if (result) {
+              $('.login-choice').hide()
             $('#result').html('Login Successful!</br>'+ result +
                               '</br>Redirecting...')
            setTimeout(function() {

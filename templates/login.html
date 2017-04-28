@@ -11,40 +11,40 @@
 {% endblock %}
 
 {% block content %}
+<section class="row login-choice">
+    <div class="col-xs-12 text-center login-btns">
+        <input type="hidden" name="state" value="{{STATE}}">
+        <input type="hidden" name="return_url" value="{{return_url}}">
 
+        <h2 class="text-center margin-bottom">Please, login with an existing account:
+        </h2>
+
+    <!-- GOOGLE PLUS SIGN IN-->
+        <div id="signInButton">
+              <span class="g-signin"
+                data-scope="openid email"
+                data-clientid="101218103424-cpnuh0g2i37c7i0dv571v12fjr0u12kn.apps.googleusercontent.com"
+                data-redirecturi="postmessage"
+                data-accesstype="offline"
+                data-cookiepolicy="single_host_origin"
+                data-callback="signInCallback"
+                data-approvalprompt="force">
+              </span>
+        </div>
+    <!-- END GOOGLE PLUS SIGN IN -->
+
+    <!-- FACEBOOK SIGN IN -->
+        <button>
+            <fb:login-button scope="public_profile,email"
+                             onlogin="sendTokenToServer();">
+                <a href='javascript:sendTokenToServer()'>Login with Facebook</a>
+            </fb:login-button>
+        </button>
+    <!--END FACEBOOK SIGN IN -->
+    </div>
+</section>
 
 <section class="row">
-
-<input type="hidden" name="state" value="{{STATE}}">
-<input type="hidden" name="return_url" value="{{return_url}}">
-
-<h2 class="col-xs-12 text-center">Please, login with an existing account:</h2>
-
-<div class="col-xs-12 text-center login-btns">
-<!-- GOOGLE PLUS SIGN IN-->
-
-<div id="signInButton">
-      <span class="g-signin"
-        data-scope="openid email"
-        data-clientid="101218103424-cpnuh0g2i37c7i0dv571v12fjr0u12kn.apps.googleusercontent.com"
-        data-redirecturi="postmessage"
-        data-accesstype="offline"
-        data-cookiepolicy="single_host_origin"
-        data-callback="signInCallback"
-        data-approvalprompt="force">
-      </span>
-</div>
-<!-- END GOOGLE PLUS SIGN IN -->
-
-<!-- FACEBOOK SIGN IN -->
-<button>
-    <fb:login-button scope="public_profile,email"
-                     onlogin="sendTokenToServer();">
-        <a href='javascript:sendTokenToServer()'>Login with Facebook</a>
-    </fb:login-button>
-</button>
-
-<div id="result"></div>
-<!--END FACEBOOK SIGN IN -->
+    <div id="result" class="col-xs-12 text-center"></div>
 </section>
 {% endblock %}
