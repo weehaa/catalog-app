@@ -1,13 +1,11 @@
-from flask import Flask, render_template, redirect, url_for, request, jsonify,\
-                  flash
-from flask import session as login_session
+from flask import (Flask, render_template, redirect, url_for, request, jsonify,
+                  flash, session as login_session, make_response)
 from oauth2client.client import flow_from_clientsecrets
 from oauth2client.client import FlowExchangeError
+from functools import wraps
 import httplib2
 import json
-from flask import make_response
 import requests
-from functools import wraps
 import crud
 import random
 import string
@@ -23,16 +21,15 @@ APPLICATION_NAME = "Catalog App"
 @app.route('/catalog')
 def catalog():
     '''Main page handler'''
-    categories = crud.category_all()
     # show last 9 items
     items = crud.items_latest()[:9]
-    return render_template('catalog.html',
-                           categories=categories, items=items)
+    return render_template('catalog.html', items=items)
 
 
 @app.route('/catalog/<category_name>/<item_name>')
 def categoryItem(category_name, item_name):
     '''View item details page handler'''
+    categories = crud.category_all()
     item = crud.item_byCatAndName(category_name, item_name)
     return render_template('category_item.html',
                            category_name=category_name,
@@ -45,15 +42,12 @@ def categoryItems(category_name):
     categories = crud.category_all()
     cat_items = crud.items_bycat(category_name)
     return render_template('category_items.html',
-                           categories=categories,
                            category_name=category_name,
                            items=cat_items)
 
 
 @app.route('/catalog.json')
 def catalogJSON():
-    pass
-    categories = crud.category_all()
     return jsonify(Category=[c.serialize for c in categories])
 
 
@@ -155,8 +149,7 @@ def showLogin():
     if return_url is None:
         return_url = '/'
     # create unique state token (anti-frogery)
-    state = ''.join(random.choice(string.ascii_uppercase + string.digits)
-                    for x in xrange(32))
+    state = random_string()
     login_session['state'] = state
     return render_template('login.html', STATE=state, return_url=return_url)
 
@@ -379,7 +372,12 @@ def disconnect():
         flash("You were not logged in")
         return redirect(url_for("catalog"))
 
+def random_string(l=32):
+    return ''.join(random.choice(string.ascii_uppercase + string.digits)
+                        for x in xrange(l))
+
 if __name__ == '__main__':
-    app.secret_key = random_string(30)
+    app.secret_key = random_string()
+    app.jinja_env.globals['categories'] = crud.category_all()
     app.debug = True
     app.run(host='0.0.0.0', port=5000)

@@ -3,7 +3,8 @@ from sqlalchemy import asc, desc, func
 from database_setup import User, Category, Item, Base
 from sqlalchemy.orm import sessionmaker
 
-engine = create_engine('sqlite:///catalog.db')
+engine = create_engine('sqlite:///catalog.db',
+                       connect_args={'check_same_thread': False}, echo=True)
 # Bind the engine to the metadata of the Base class so that the
 # declaratives can be accessed through a DBSession instance
 Base.metadata.bind = engine
