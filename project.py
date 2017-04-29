@@ -186,7 +186,8 @@ def fbconnect():
 
     url = 'https://graph.facebook.com/v2.8/me?%s&fields=name,id,email' % token
     h = httplib2.Http()
-    result = h.request(url, 'GET')[1]
+    # Added decode("utf8") To make this compatible for python 3 (udacity review)
+    result = h.request(url, 'GET')[1].decode("utf8")
     # print "url sent for API access:%s"% url
     # print "API JSON result: %s" % result
     data = json.loads(result)
@@ -206,7 +207,7 @@ def fbconnect():
     # Get user picture
     url = 'https://graph.facebook.com/v2.8/me/picture?%s&redirect=0&height=200&width=200' % token
     h = httplib2.Http()
-    result = h.request(url, 'GET')[1]
+    result = h.request(url, 'GET')[1].decode("utf8")
     data = json.loads(result)
 
     login_session['picture'] = data["data"]["url"]
@@ -267,7 +268,7 @@ def gconnect():
     url = ('https://www.googleapis.com/oauth2/v1/tokeninfo?access_token=%s'
            % access_token)
     h = httplib2.Http()
-    result = json.loads(h.request(url, 'GET')[1])
+    result = json.loads(h.request(url, 'GET')[1]).decode("utf8")
     # If there was an error in the access token info, abort.
     if result.get('error') is not None:
         response = make_response(json.dumps(result.get('error')), 500)
