@@ -6,9 +6,15 @@ from functools import wraps
 import httplib2
 import json
 import requests
-import crud
 import random
 import string
+import os
+import sys
+
+current_path = os.path.dirname(__file__)
+sys.path.insert(0, current_path)
+
+import crud
 
 app = Flask(__name__)
 
