@@ -16,15 +16,15 @@ sys.path.insert(0, current_path)
 
 import crud
 
-app = Flask(__name__)
+application= Flask(__name__)
 
 CLIENT_ID = json.loads(
-    open('catalog_app_client_secret.json', 'r').read())['web']['client_id']
+    open(current_path + '/catalog_app_client_secret.json', 'r').read())['web']['client_id']
 APPLICATION_NAME = "Catalog App"
 
 
-@app.route('/')
-@app.route('/catalog')
+@application.route('/')
+@application.route('/catalog')
 def catalog():
     '''Main page handler'''
     # show last 9 items
@@ -32,7 +32,7 @@ def catalog():
     return render_template('catalog.html', items=items)
 
 
-@app.route('/catalog/<category_name>/<item_name>')
+@application.route('/catalog/<category_name>/<item_name>')
 def categoryItem(category_name, item_name):
     '''View item details page handler'''
     categories = crud.category_all()
@@ -42,7 +42,7 @@ def categoryItem(category_name, item_name):
                            item=item)
 
 
-@app.route('/catalog/<category_name>/items')
+@application.route('/catalog/<category_name>/items')
 def categoryItems(category_name):
     '''Category items page handler'''
     categories = crud.category_all()
@@ -52,7 +52,7 @@ def categoryItems(category_name):
                            items=cat_items)
 
 
-@app.route('/catalog.json')
+@application.route('/catalog.json')
 def catalogJSON():
     return jsonify(Category=[c.serialize for c in categories])
 
@@ -68,7 +68,7 @@ def logged_in(func):
     return decorated_function
 
 
-@app.route('/catalog/newitem/', methods=['GET', 'POST'])
+@application.route('/catalog/newitem/', methods=['GET', 'POST'])
 @logged_in
 def addItem():
     '''New item page handler'''
@@ -92,7 +92,7 @@ def addItem():
                            categories=categories)
 
 
-@app.route('/catalog/<category_name>/<item_name>/edit/',
+@application.route('/catalog/<category_name>/<item_name>/edit/',
            methods=['GET', 'POST'])
 @logged_in
 def editItem(item_name, category_name):
@@ -123,7 +123,7 @@ def editItem(item_name, category_name):
                            category_name=category_name)
 
 
-@app.route('/catalog/<category_name>/<item_name>/delete/',
+@application.route('/catalog/<category_name>/<item_name>/delete/',
            methods=['GET', 'POST'])
 @logged_in
 def deleteItem(item_name, category_name):
@@ -145,7 +145,7 @@ def deleteItem(item_name, category_name):
                                category_name=category_name)
 
 
-@app.route('/login')
+@application.route('/login')
 def showLogin():
     '''Login page handler'''
     # define url to return the user after login
@@ -160,7 +160,7 @@ def showLogin():
     return render_template('login.html', STATE=state, return_url=return_url)
 
 
-@app.route('/fbconnect', methods=['POST'])
+@application.route('/fbconnect', methods=['POST'])
 def fbconnect():
     if request.args.get('state') != login_session['state']:
         response = make_response(json.dumps('Invalid state parameter.'), 401)
@@ -169,10 +169,10 @@ def fbconnect():
     access_token = request.data
     print "access token received %s " % access_token
 
-    app_id = json.loads(open('fb_client_secrets.json', 'r').read())[
+    app_id = json.loads(open(current_path + '/fb_client_secrets.json', 'r').read())[
         'web']['app_id']
     app_secret = json.loads(
-        open('fb_client_secrets.json', 'r').read())['web']['app_secret']
+        open(current_path + '/fb_client_secrets.json', 'r').read())['web']['app_secret']
     url = 'https://graph.facebook.com/oauth/access_token?grant_type=fb_exchange_token&client_id=%s&client_secret=%s&fb_exchange_token=%s' % (
         app_id, app_secret, access_token)
     h = httplib2.Http()
@@ -228,7 +228,7 @@ def fbconnect():
     return output
 
 
-@app.route('/fbdisconnect')
+@application.route('/fbdisconnect')
 def fbdisconnect():
     facebook_id = login_session['facebook_id']
     # The access token must me included to successfully logout
@@ -239,7 +239,7 @@ def fbdisconnect():
     return "you have been logged out"
 
 
-@app.route('/gconnect', methods=['POST'])
+@application.route('/gconnect', methods=['POST'])
 def gconnect():
     '''Google account login method'''
     # Validate state token
@@ -252,7 +252,7 @@ def gconnect():
 
     try:
         # Upgrade the authorization code into a credentials object
-        oauth_flow = flow_from_clientsecrets('catalog_app_client_secret.json',
+        oauth_flow = flow_from_clientsecrets(current_path + '/catalog_app_client_secret.json',
                                              scope='')
         oauth_flow.redirect_uri = 'postmessage'
         credentials = oauth_flow.step2_exchange(code)
@@ -282,7 +282,7 @@ def gconnect():
         response.headers['Content-Type'] = 'application/json'
         return response
 
-    # Verify that the access token is valid for this app.
+    # Verify that the access token is valid for this application.
     if result['issued_to'] != CLIENT_ID:
         response = make_response(
             json.dumps("Token's client ID does not match app's."), 401)
@@ -333,7 +333,7 @@ def gconnect():
     return output
 
 
-@app.route('/gdisconnect')
+@application.route('/gdisconnect')
 def gdisconnect():
     ''' Google user account disconnect method. Revokes gconnect token'''
     # Only disconnect a connected user.
@@ -356,7 +356,7 @@ def gdisconnect():
 
 
 # Disconnect based on provider
-@app.route('/disconnect')
+@application.route('/disconnect')
 def disconnect():
     '''Logout user method'''
     if 'provider' in login_session:
@@ -383,7 +383,7 @@ def random_string(l=32):
                         for x in xrange(l))
 
 if __name__ == '__main__':
-    app.secret_key = random_string()
-    app.jinja_env.globals['categories'] = crud.category_all()
-    app.debug = True
-    app.run(host='0.0.0.0', port=5000)
+    application.secret_key = random_string()
+    application.jinja_env.globals['categories'] = crud.category_all()
+    application.debug = True
+    application.run(host='0.0.0.0', port=5000)
