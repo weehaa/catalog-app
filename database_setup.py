@@ -59,6 +59,6 @@ class Item(Base):
 
 Index('itemname_catid_idx', Item.name, Item.category_id, unique=True)
 
-engine = create_engine('sqlite:///catalog.db')
+engine = create_engine('postgresql://ubuntu:ubuntu@localhost/catalog')
 
 Base.metadata.create_all(engine)
